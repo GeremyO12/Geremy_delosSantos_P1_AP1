@@ -18,13 +18,13 @@ public class AporteService(IDbContextFactory<Contexto> Dbfactory)
     public async Task<bool> Existe(int id)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
-        return await contexto.Ingresos.AnyAsync(i => i.AporteId == id);
+        return await contexto.Aporte.AnyAsync(i => i.AporteId == id);
     }
 
     public async Task<bool> Insert(Aporte modelo)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
-        contexto.Ingresos.Add(modelo);
+        contexto.Aporte.Add(modelo);
         return await contexto.SaveChangesAsync() > 0;
     }
 
@@ -38,13 +38,13 @@ public class AporteService(IDbContextFactory<Contexto> Dbfactory)
     public async Task<Aporte?> Buscar(int id)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
-        return await contexto.Ingresos.FirstOrDefaultAsync(i => i.AporteId == id);
+        return await contexto.Aporte.FirstOrDefaultAsync(i => i.AporteId == id);
     }
 
     public async Task<bool> Eliminar(int id)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
-        return await contexto.Ingresos
+        return await contexto.Aporte
             .AsNoTracking()
             .Where(i => i.AporteId == id)
             .ExecuteDeleteAsync() > 0;
@@ -53,7 +53,7 @@ public class AporteService(IDbContextFactory<Contexto> Dbfactory)
     public async Task<List<Aporte>> Listar(Expression<Func<Aporte, bool>> criterio)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
-        return await contexto.Ingresos
+        return await contexto.Aporte
             .Where(criterio)
             .AsNoTracking()
             .ToListAsync();
