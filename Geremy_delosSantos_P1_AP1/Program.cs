@@ -1,10 +1,19 @@
 using Geremy_delosSantos_P1_AP1.Components;
+using Geremy_delosSantos_P1_AP1.DAL;
+using Geremy_delosSantos_P1_AP1.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
+
+builder.Services.AddScoped<AporteService>();
+
 
 var app = builder.Build();
 
