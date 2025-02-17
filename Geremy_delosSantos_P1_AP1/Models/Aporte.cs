@@ -13,7 +13,7 @@ public class Aporte
 
     [Required(ErrorMessage = "Concepto es Requerido")]
     [StringLength(maximumLength: 500, ErrorMessage = "Concepto muy largo")]
-    public string? Concepto { get; set; }
+    public string? Observacion { get; set; }
 
     [Required(ErrorMessage = "Monto es Requerido")]
     [Range(minimum: 0.01, maximum: double.MaxValue, ErrorMessage = "El Monto debe ser mayor a 0.05")]
