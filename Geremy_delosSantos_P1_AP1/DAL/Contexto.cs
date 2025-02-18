@@ -7,6 +7,6 @@ namespace Geremy_delosSantos_P1_AP1.DAL
     {
         public Contexto(DbContextOptions<Contexto> options) : base(options) { }
 
-        public DbSet<Aporte> Ingresos { get; set; }
+        public DbSet<Aporte> Aporte { get; set; }
     }
 }
