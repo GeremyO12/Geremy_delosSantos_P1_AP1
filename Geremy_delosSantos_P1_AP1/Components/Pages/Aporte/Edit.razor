@@ -1,0 +1,71 @@
+﻿@page "/Aporte/Edit/{aporteId:int}"
+@rendermode InteractiveServer
+@inject AporteService aporteService
+@inject NavigationManager navigationManager
+
+<PageTitle>Crear Editar</PageTitle>
+<EditForm Model="aporte" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Aporte<i class="bi bi-person-fill-gear"></i></h5>
+            </div>
+
+            <div class="card-body">
+                @*AporteId*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>AporteId</strong></label>
+                    <InputNumber class="form-control" @bind-Value="aporte.AporteId" readonly />
+                </div>
+                @*Observacion*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Observacion</strong></label>
+                    <InputText class="form-control" @bind-Value="aporte.Observacion" />
+                    <ValidationMessage For="@(() => aporte.Observacion)" />
+                </div>
+                @*Fecha*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha</strong></label>
+                    <InputDate class="form-control" @bind-Value="aporte.Fecha" />
+                    <ValidationMessage For="@(() => aporte.Fecha)" />
+                </div>
+                @*Monto*@
+                <div class="mb-3">
+                    <label class="form-label"><strong>Monto</strong></label>
+                    <InputNumber class="form-control" @bind-Value="aporte.Monto" />
+                    <ValidationMessage For="@(() => aporte.Monto)" />
+                </div>
+
+            </div>
+
+            @*Footer*@
+            <div class="card-footer text-center mt-2">
+                <a href="/Aporte" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+            </div>
+        </div>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter] 
+    public int aporteId { get; set; }
+    Aporte aporte { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        aporte.Fecha = DateTime.Now;
+        aporte = await aporteService.Buscar(aporteId) ?? new();
+    }
+
+    private async Task Guardar()
+    {
+        await aporteService.Guardar(aporte);
+        navigationManager.NavigateTo("/Aporte/Index");
+    }
+}

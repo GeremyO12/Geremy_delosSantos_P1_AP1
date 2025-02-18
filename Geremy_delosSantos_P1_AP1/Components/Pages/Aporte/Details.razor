@@ -1,0 +1,55 @@
+﻿@page "/Aporte/Details/{AporteId:int}"
+@inject AporteService aporteService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Detalles de Aporte</PageTitle>
+@if (Aporte != null)
+{
+    <div class="container">
+        <div class="card shadow-header">
+            <div class="card-header  bg-primary text-white text-center py-2 rounded">
+                <h3 class="text-center"><strong>Detalles de Aporte</strong></h3>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                <li><strong>AporteId:</strong> @Aporte.AporteId</li>
+                                <li><strong>Fecha:</strong> @Aporte.Fecha</li>
+                                <li><strong>Persona:</strong> @Aporte.Persona</li>
+                                <li><strong>Observacion:</strong> @Aporte.Observacion</li>
+                                <li><strong>Monto:</strong> @Aporte.Monto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-outline-primary" @onclick="Volver"><i class="bi bi-box-arrow-left"></i> Volver</button>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>El aporte no encontrado encontrado.</p>
+}
+
+
+@code {
+    [Parameter]
+    public int AporteId { get; set; }
+    public Aporte? Aporte { get; set; } = new Aporte();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Aporte = await aporteService.Buscar(AporteId);
+    }
+    public void Volver()
+    {
+        navigationManager.NavigateTo("/Aporte/Index");
+    }
+}
