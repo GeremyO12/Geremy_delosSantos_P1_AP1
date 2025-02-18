@@ -1,0 +1,131 @@
+﻿@page "/Aporte/Index"
+@inject AporteService aporteService
+@rendermode InteractiveServer
+@using System.Linq.Expressions
+
+
+<PageTitle>Lista de Aporte</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header space-between">
+            <h5 class="card-title text-center">Registro de Aporte</h5>
+            <a href="/Aporte/Create" class="btn btn-primary"> <span class="bi bi-plus-square bi-trask mt-3"></span> Crear</a>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                @*Filtrar por*@
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
+
+                @*ValorFiltro*@
+                <div class="col-4">
+                    <label class="col-form-label"><strong>B&uacute;squeda</strong></label>
+                </div>
+            </div>
+
+            <div class="row align-items-center">
+                @*filtro*@
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="Id">Id</option>
+                    </InputSelect>
+                </div>
+
+                @*Busqueda*@
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"> Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-striped table-hover">
+                <thead class="table text-black">
+                    <tr>
+
+                        <th>AproteId</th>
+                        <th>Fecha</th>
+                        <th>Persona</th>
+                        <th>Observacion</th>
+                        <th>Monto</th>
+                        <th colspan="2" class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var aporte in listaAporte)
+                    {
+                        <tr>
+                            @*Detalle*@
+                            <td> @aporte.AporteId</td>
+                            <td> @aporte.Fecha</td>
+                            <td> @aporte.Persona</td>
+                            <td> @aporte.Observacion</td>
+                            <td> @aporte.Monto.ToString("n2")</td>
+
+                            @*Boton Editar*@
+                            <td class="text-center">
+                                <a href="Aporte/Edit/@aporte.AporteId" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                            </td>
+
+                            @*Boton Eliminar*@
+                            <td class="text-center">
+                                <button class="btn btn-outline-danger bi bi-trash" @onclick="() => Eliminar(aporte.AporteId)"></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    List<Aporte> listaAporte = new();
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Buscar();
+    }
+
+    public async Task Buscar()
+    {
+        Expression<Func<Aporte, bool>> query = (i => i.AporteId > 0);
+
+        if (Filtro == "Id")
+        {
+            try
+            {
+                int id = Convert.ToInt32(ValorFiltro);
+                query = (i => i.AporteId == id);
+            }
+            catch (Exception e)
+            {
+                query = (i => i.AporteId > 0);
+            }
+
+        }
+        else if (Filtro == "Observacion")
+        {
+            query = ((i => i.Observacion.Contains(ValorFiltro)));
+        }
+        else if (string.IsNullOrEmpty(ValorFiltro))
+        {
+            query = (i => i.AporteId > 0);
+        }
+        listaAporte = await aporteService.Listar(query);
+    }
+
+    public async Task Eliminar(int id)
+    {
+        await aporteService.Eliminar(id);
+        listaAporte = await aporteService.Listar(i => i.AporteId > 0);
+    }
+}
