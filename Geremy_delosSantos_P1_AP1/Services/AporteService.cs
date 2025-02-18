@@ -12,7 +12,7 @@ public class AporteService(IDbContextFactory<Contexto> Dbfactory)
         if (await Existe(aporte.AporteId))
             return await Modificar(aporte);
         else
-            return await Insert(aporte);
+            return await Insertar(aporte);
     }
 
     public async Task<bool> Existe(int id)
@@ -21,7 +21,7 @@ public class AporteService(IDbContextFactory<Contexto> Dbfactory)
         return await contexto.Aporte.AnyAsync(i => i.AporteId == id);
     }
 
-    public async Task<bool> Insert(Aporte modelo)
+    public async Task<bool> Insertar(Aporte modelo)
     {
         await using var contexto = await Dbfactory.CreateDbContextAsync();
         contexto.Aporte.Add(modelo);
